@@ -1,5 +1,5 @@
 import React from "react";
-import Wrapper from "../assets/wrappers/Landing";
+import Wrapper from "../assets/wrappers/LandingPage";
 import main from "../assets/images/main.svg";
 import { Link } from "react-router-dom";
 
