@@ -6,7 +6,9 @@ import {
   Register,
   Login,
   DashboardLayout,
-  Error
+  AddJob,
+  AllJobs,
+  Profile
 } from './pages'
 
 const App = () => {
@@ -31,7 +33,21 @@ const App = () => {
         },
         {
           path: 'dashboard',
-          element: <DashboardLayout />
+          element: <DashboardLayout />,
+          children: [
+            {
+              index: true,
+              element: <AddJob/>
+            },
+            {
+              path: 'all-jobs',
+              element: <AllJobs/>
+            },
+            {
+              path: 'profile',
+              element: <Profile />
+            },
+          ]
         },
       ]
     }
