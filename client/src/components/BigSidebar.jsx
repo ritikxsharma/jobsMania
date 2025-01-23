@@ -1,11 +1,25 @@
-import React from 'react'
+import React from "react";
+import NavLinks from "./NavLinks";
+import { useDashboardContext } from "../pages/DashboardLayout";
+import Wrapper from "../assets/wrappers/BigSidebar";
 
 const SideBar = () => {
-  return (
-    <>
-        SideBar
-    </>
-  )
-}
+  const { showSidebar } = useDashboardContext();
 
-export default SideBar
+  return (
+    <Wrapper>
+      <div
+        className={`sidebar-container ${!showSidebar ? "show-sidebar" : ""}`}
+      >
+        <div className="content">
+          <header>
+            Jobify
+          </header>
+          <NavLinks isBigSidebar />
+        </div>
+      </div>
+    </Wrapper>
+  );
+};
+
+export default SideBar;

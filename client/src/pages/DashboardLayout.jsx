@@ -5,16 +5,23 @@ import Wrapper from "../assets/wrappers/Dashboard";
 
 const DashboardContext = createContext();
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ checkDefaultTheme }) => {
   const user = {
     name: "John",
   };
 
   const [showSidebar, setShowSidebar] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
 
   const toggleDarkTheme = () => {
-    console.log(`toggle dark theme`);
+    
+    setIsDarkTheme((prevState) => {
+      const newDarkTheme = !prevState
+      document.body.classList.toggle('dark-theme', newDarkTheme)
+      localStorage.setItem('darkTheme', newDarkTheme)
+      return newDarkTheme
+    })    
+
   };
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
