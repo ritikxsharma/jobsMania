@@ -14,11 +14,9 @@ const schema = mongoose.Schema(
       enum: ["full-time", "part-time", "internship"],
       default: "full-time",
     },
-    jobLocation: {
-      type: String,
-    },
+    jobLocation: String,
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Job', schema)
+module.exports = mongoose.model("Job", schema);
