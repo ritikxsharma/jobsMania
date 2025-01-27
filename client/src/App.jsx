@@ -8,7 +8,8 @@ import {
   DashboardLayout,
   AddJob,
   AllJobs,
-  Profile
+  Profile,
+  Error
 } from './pages'
 
 const checkDefaultTheme = () => {
@@ -56,7 +57,7 @@ const App = () => {
               element: <Profile />
             },
           ]
-        },
+        }
       ]
     }
   ])
