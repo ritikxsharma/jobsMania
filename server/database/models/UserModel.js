@@ -16,4 +16,12 @@ const schema = mongoose.Schema(
   { timestamps: true }
 );
 
+schema.methods.toJSON = function() {
+
+  let user = this.toObject()  
+  delete user.password
+
+  return user
+}
+
 module.exports = mongoose.model('User', schema)

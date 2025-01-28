@@ -9,8 +9,9 @@ const {
 
 //Get all jobs
 const getAllJobs = async (req, res, next) => {
-  try {
-    const jobs = await Job.find();
+  try {       
+
+    const jobs = await Job.find({ createdBy: req.user.id });
     res.status(HTTP_STATUS.OK).send(jobs);
   } catch (error) {
     next(error);
@@ -20,12 +21,10 @@ const getAllJobs = async (req, res, next) => {
 //Create a new job
 const createJob = async (req, res, next) => {
   try {
-    const { company, position } = req.body;
-
-    const job = await new Job({
-      company,
-      position,
-    });
+    
+    req.body.createdBy = req.user.id
+    
+    const job = await new Job(req.body);
 
     job.save();
 
@@ -39,11 +38,7 @@ const createJob = async (req, res, next) => {
 const findJobById = async (req, res, next) => {
   try {    
     const { id } = req.params;
-
     const job = await Job.findById(id);
-    if (!job) {
-      throw new NOT_FOUND_ERROR('no job found with matching id')
-    }
 
     res.status(HTTP_STATUS.OK).json({ job });
   } catch (error) {
@@ -60,10 +55,6 @@ const editJob = async (req, res, next) => {
       new: true,
     });
 
-    if (!job) {
-      throw new NOT_FOUND_ERROR('no job found with matching id')
-    }
-
     res.status(HTTP_STATUS.OK).json({ message: "job modified", job });
   } catch (error) {
     next(error);
@@ -76,10 +67,6 @@ const deleteJob = async (req, res, next) => {
     const { id } = req.params;
 
     const job = await Job.findByIdAndDelete(id);
-
-    if (!job) {
-      throw new NOT_FOUND_ERROR('no job found with matching id')
-    }
 
     res.status(HTTP_STATUS.OK).json({ message: "job deleted", job });
   } catch (error) {

@@ -15,8 +15,18 @@ const schema = mongoose.Schema(
       default: "full-time",
     },
     jobLocation: String,
+    createdBy: {
+      type: mongoose.Types.ObjectId,
+      ref: 'User'
+    }
   },
   { timestamps: true }
 );
+
+schema.methods.toJSON = function(){
+  let object = this.toObject()
+  delete object.password
+  return object
+}
 
 module.exports = mongoose.model("Job", schema);

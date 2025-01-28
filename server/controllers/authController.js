@@ -1,8 +1,9 @@
 const HTTP_Status = require("../helpers/statusCodes");
-const { BAD_REQUEST_ERROR } = require("../helpers/customErrors");
+const { BAD_REQUEST_ERROR, UNAUTHORIZED_ERROR } = require("../helpers/customErrors");
 const User = require("../database/models/UserModel");
-const jwt = require("jsonwebtoken");
 const sendEmail = require("../aws/emailService");
+const { generateToken, validateToken } = require("../helpers/tokenManager");
+const { hashPassword, validatePassword } = require("../helpers/passwordManager");
 
 const preRegister = async (req, res, next) => {
   try {
@@ -16,13 +17,11 @@ const preRegister = async (req, res, next) => {
       );
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "10m",
-    });
+    const token = generateToken({ email })
 
     await sendEmail(email, token);
 
-    res.status(HTTP_Status.OK).json({ message: "email sent" });
+    res.status(HTTP_Status.OK).json({ message: "email sent", token });
   } catch (error) {
     next(error);
   }
@@ -30,12 +29,22 @@ const preRegister = async (req, res, next) => {
 
 const register = async (req, res, next) => {
   try {
-    const { token } = req.body;
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await new User(req.body);
+    const decodedToken = validateToken(req.body.token);
+    const user = await User.findOne({ email: decodedToken.email })
+    if(user){
+      throw new BAD_REQUEST_ERROR('User/email already exists')
+    }
+
+    req.body.email = decodedToken.email
+    
+    const hashedPassword = await hashPassword(req.body.password)
+    req.body.password = hashedPassword
+    
+    const newUser = await new User(req.body).save();
+
     res
       .status(HTTP_Status.CREATED)
-      .json({ message: "User created", user, decodedToken });
+      .json({ message: "User created", user: newUser, decodedToken });
   } catch (error) {
     next(error);
   }
@@ -43,14 +52,41 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    res.send("Login");
+    const user = await User.findOne({ email: req.body.email })
+    if(!user){
+      throw new UNAUTHORIZED_ERROR('user/email is not registered')
+    }
+
+    if(! await validatePassword(req.body.password, user.password)){
+      throw new UNAUTHORIZED_ERROR('incorrect password. try again')
+    }
+
+    const token = generateToken({ userId: user._id, role: user.role})
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + (1000*60*60*24)),
+      secure: process.env.NODE_ENV === 'production'
+    })
+    res.status(HTTP_Status.OK).json({ message: "login successful", user, token })
+
   } catch (error) {
     next(error);
   }
 };
 
+const logout = async(req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(Date.now())
+  })
+
+  res.status(HTTP_Status.OK).json({ message: 'logout successful' })
+}
+
 module.exports = {
   preRegister,
   register,
   login,
+  logout
 };
