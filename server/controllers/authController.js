@@ -27,15 +27,26 @@ const preRegister = async (req, res, next) => {
   }
 };
 
-const register = async (req, res, next) => {
+const validateEmail = async(req, res, next) => {
   try {
+    console.log(req.body);
+    
     const decodedToken = validateToken(req.body.token);
     const user = await User.findOne({ email: decodedToken.email })
     if(user){
       throw new BAD_REQUEST_ERROR('User/email already exists')
     }
 
-    req.body.email = decodedToken.email
+    res
+    .status(HTTP_Status.OK)
+    .json({ message: "Verification successful" });
+  } catch (error) {
+    next(error);
+  }
+}
+
+const register = async (req, res, next) => {
+  try {
     
     const hashedPassword = await hashPassword(req.body.password)
     req.body.password = hashedPassword
@@ -86,6 +97,7 @@ const logout = async(req, res) => {
 
 module.exports = {
   preRegister,
+  validateEmail,
   register,
   login,
   logout

@@ -16,7 +16,6 @@ const authenticateUser = async (req, res, next) => {
 };
 
 const hasValidPermission = (...roles) => {
-  console.log(roles);
   return (req, res, next) => {
     if(!roles.includes(req.user.role)){
       throw new UNAUTHORIZED_ERROR('not authorized to access')

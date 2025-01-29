@@ -20,7 +20,7 @@ const sendEmail = async (email, token) => {
                 <html>
                   <h2>Welcome to Jobs Mania</h2>
                   <p>We are glad to have you with us.</p>
-                  <a href="${process.env.CLIENT_URL}/auth/account-activate/${token}">Activate my account</a>
+                  <a href="${process.env.CLIENT_URL}/register?token=${token}">Activate my account</a>
                 </html>
               `,
             },

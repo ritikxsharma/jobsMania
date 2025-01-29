@@ -4,6 +4,7 @@ const {
   login,
   preRegister,
   logout,
+  validateEmail,
 } = require("../controllers/authController");
 const {
   validatePreRegisterInput,
@@ -14,6 +15,7 @@ const {
 const router = express.Router();
 
 router.route("/pre-register").post(validatePreRegisterInput, preRegister);
+router.route("/validate-email").post(validateEmail)
 router.route("/register").post(validateRegisterInput, register);
 router.route("/login").post(validateLoginInput, login);
 router.route("/logout").get(logout);
