@@ -1,36 +1,53 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Wrapper from "../assets/wrappers/RegisterAndLoginPage";
 import { FormRow } from "../components";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Login = () => {
-  const fields = [
-    {
-      name: "email",
-      type: "email",
-      defaultValue: "john@mail.com",
-      labelText: "email",
-    },
-    {
-      name: "password",
-      type: "password",
-      defaultValue: "johndoe",
-      labelText: "password",
-    },
-  ];
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
+
+  const navigate = useNavigate()
+
+  const handleSubmit = async(e) => {
+    try {
+      e.preventDefault()
+      const res = await axios.post('/api/auth/login', formData)
+      if(res.status === 200){
+        toast.success('Login successfull!')
+        navigate('/dashboard')
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Internal Server Error')
+    }
+  }
 
   return (
     <Wrapper>
-      <form className="form">
+      <form className="form" onSubmit={handleSubmit}>
         <h4>Login</h4>
-        {fields.map((field, index) => {
+        {Object.keys(formData).map((key, index) => {
           return (
             <FormRow
-              key={index}
-              type={field.type}
-              name={field.name}
-              defaultValue={field.defaultValue}
-              labelText={field.labelText}
+              key={key}
+              type={key === 'password' ? 'password' : 'text'}
+              name={key}
+              value={formData[key]}
+              labelText={key.replace(/(A-Z)/g, " $1").toUpperCase()}
+              onChange={handleInputChange}
             />
           );
         })}

@@ -1,6 +1,6 @@
 import React from "react";
 
-const FormRow = ({ type, name, labelText, value, onChange}) => {  
+const FormRow = ({ type, name, labelText, value, onChange, disabled}) => {  
   
   return (
     <div className="form-row">
@@ -11,10 +11,11 @@ const FormRow = ({ type, name, labelText, value, onChange}) => {
         type={type}
         name={name}
         id={name}
-        className="form-input"
+        className={`form-input ${disabled ? 'disabled-input' : ''}`}
         value={value || ""}
         onChange={onChange}
         required
+        disabled={disabled}
       />
     </div>
   );

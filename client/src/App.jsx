@@ -70,18 +70,6 @@ const App = () => {
   ]);
 
   return (
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path='*' element={ <Error/> } />
-    //     <Route path='/' element={ <HomeLayout/> }>
-    //       <Route index={true} element={ <Landing/> } />
-    //       <Route path='register' element={ <Register/> } />
-    //       <Route path='login' element={ <Login/> } />
-    //       <Route path='dashboard' element={ <DashboardLayout/> } />
-    //       <Route path='error' element={ <Error/> } />
-    //     </Route>
-    //   </Routes>
-    // </BrowserRouter>
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <RouterProvider router={router} />

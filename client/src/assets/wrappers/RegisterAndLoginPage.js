@@ -25,6 +25,12 @@ const Wrapper = styled.section`
     letter-spacing: var(--letter-spacing);
     margin-left: 0.1rem;
   }
+  .disabled-input{
+    background-color: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 `;
 
 export default Wrapper;

@@ -14,11 +14,11 @@ const Register = () => {
 
   const [isVerified, setIsVerified] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "test1",
-    lastName: "data",
-    email: "test@gmail.com",
-    location: "city",
-    password: "12345678",
+    firstName: "",
+    lastName: "",
+    email: "",
+    location: "",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -28,21 +28,26 @@ const Register = () => {
 
       try {
         setLoading(true);
-        await new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 5000);
-        });
+        // await new Promise((resolve, reject) => {
+        //   setTimeout(() => {
+        //     resolve(true);
+        //   }, 5000);
+        // });
         const res = await axios.post(`/api/auth/validate-email`, { token });
+        console.log(res);
 
         if (res.status === 200) {
           toast.success("Email verified! Complete your registeration");
           setIsVerified(true);
+          setFormData((prevData) => ({
+            ...prevData,
+            email: res.data.email,
+          }));
         } else {
           toast.error("Verification failed. Try again");
         }
       } catch (error) {
-        toast.error("Verification failed. Try again later");
+        toast.error(`Catch: ${error?.response?.data?.message}`);
       } finally {
         setLoading(false);
         window.history.replaceState(null, "", window.location.pathname);
@@ -54,16 +59,10 @@ const Register = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(`${name} chnaged to : ${value}`);
-
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
   };
 
   return (
@@ -81,7 +80,6 @@ const Register = () => {
             <RegisterationForm
               formData={formData}
               handleInputChange={handleInputChange}
-              handleSubmit={handleSubmit}
             />
           )}
         </>

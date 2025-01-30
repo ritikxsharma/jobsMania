@@ -2,10 +2,9 @@ import React from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import FormRow from "./FormRow";
+import { Link } from "react-router-dom";
 
-const EmailVerificationForm = ({ formData, handleInputChange }) => {
-  console.log(formData);
-  
+const EmailVerificationForm = ({ formData, handleInputChange }) => {  
     const handleEmailSubmit = async (e) => {
     e.preventDefault();
 
@@ -24,8 +23,7 @@ const EmailVerificationForm = ({ formData, handleInputChange }) => {
         );
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Unable to send verification link. Please try again later");
+      toast.error(error?.response?.data?.message);
     }finally{
         window.history.replaceState(null, "", window.location.pathname);
     }
@@ -44,6 +42,12 @@ const EmailVerificationForm = ({ formData, handleInputChange }) => {
       <button type="submit" className="btn btn-block">
         Verify
       </button>
+      <p>
+        Already a member?{" "}
+        <Link to="/login" className="member-btn">
+          login
+        </Link>
+      </p>
     </form>
   );
 };
