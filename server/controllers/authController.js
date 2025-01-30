@@ -28,26 +28,27 @@ const preRegister = async (req, res, next) => {
 };
 
 const validateEmail = async(req, res, next) => {
-  try {
-    console.log(req.body);
-    
+  try {    
     const decodedToken = validateToken(req.body.token);
+    
     const user = await User.findOne({ email: decodedToken.email })
     if(user){
       throw new BAD_REQUEST_ERROR('User/email already exists')
     }
-
+    
     res
     .status(HTTP_Status.OK)
-    .json({ message: "Verification successful" });
+    .json({ message: "Verification successful", email: decodedToken.email});
   } catch (error) {
-    next(error);
+    if(error.name === "TokenExpiredError"){
+      error.message = "Link Expired."
+    }
+    next(error)
   }
 }
 
 const register = async (req, res, next) => {
-  try {
-    
+  try {        
     const hashedPassword = await hashPassword(req.body.password)
     req.body.password = hashedPassword
     
@@ -55,8 +56,8 @@ const register = async (req, res, next) => {
 
     res
       .status(HTTP_Status.CREATED)
-      .json({ message: "User created", user: newUser, decodedToken });
-  } catch (error) {
+      .json({ message: "User created", user: newUser});
+  } catch (error) {        
     next(error);
   }
 };

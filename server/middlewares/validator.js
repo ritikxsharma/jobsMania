@@ -62,7 +62,7 @@ const validatePreRegisterInput = withValidationResult([
 ]);
 
 const validateRegisterInput = withValidationResult([
-  body("firstname").notEmpty().withMessage("firstname is required"),
+  body("firstName").notEmpty().withMessage("firstname is required"),
   body("password")
     .notEmpty()
     .withMessage("password is required")
@@ -81,7 +81,7 @@ const validateLoginInput = withValidationResult([
 ]);
 
 const validateUpdateUserInput = withValidationResult([
-  body("firstname").notEmpty().withMessage('first name is required'),
+  body("firstName").notEmpty().withMessage('first name is required'),
   body("location").notEmpty().withMessage("Location is required"),
 ])
 
