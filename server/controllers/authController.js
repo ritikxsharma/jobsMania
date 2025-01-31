@@ -22,7 +22,8 @@ const preRegister = async (req, res, next) => {
     await sendEmail(email, token);
 
     res.status(HTTP_Status.OK).json({ message: "email sent", token });
-  } catch (error) {
+  } catch (error) {    
+    error.message = 'Unable to send verification link. Please try again later or try using another mail.'    
     next(error);
   }
 };
