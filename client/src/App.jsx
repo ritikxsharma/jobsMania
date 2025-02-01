@@ -10,13 +10,21 @@ import {
   AllJobs,
   Profile,
   Error,
+  EditJob,
+  Admin,
 } from "./pages";
 
 import { ToastContainer } from "react-toastify";
 import { loginAction, registerAction } from "./handlers/actions/authActions";
-import { dashboardLoader } from './handlers/loaders/dashboardLoader'
-import { createJobAction } from "./handlers/actions/jobActions";
+import { dashboardLoader } from "./handlers/loaders/dashboardLoader";
+import {
+  createJobAction,
+  deleteJobAction,
+  updateJobAction,
+} from "./handlers/actions/jobActions";
 import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
+import { editJobLoader } from "./handlers/loaders/editPageLoader";
+import { adminLoader } from "./handlers/loaders/adminLoader";
 
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -55,16 +63,31 @@ const App = () => {
             {
               index: true,
               element: <AddJob />,
-              action: createJobAction
+              action: createJobAction,
             },
             {
               path: "all-jobs",
               element: <AllJobs />,
-              loader: allJobsLoader
+              loader: allJobsLoader,
             },
             {
               path: "profile",
               element: <Profile />,
+            },
+            {
+              path: "admin",
+              element: <Admin />,
+              loader: adminLoader
+            },
+            {
+              path: "edit-job/:id",
+              element: <EditJob />,
+              loader: editJobLoader,
+              action: updateJobAction,
+            },
+            {
+              path: "delete-job/:id",
+              action: deleteJobAction
             },
           ],
         },
