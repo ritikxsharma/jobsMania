@@ -13,13 +13,7 @@ const Register = () => {
   const token = searchParams.get("token");
 
   const [isVerified, setIsVerified] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    location: "",
-    password: "",
-  });
+  const [verifiedEmail, setVerifiedEmail] = useState('')
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,21 +22,13 @@ const Register = () => {
 
       try {
         setLoading(true);
-        // await new Promise((resolve, reject) => {
-        //   setTimeout(() => {
-        //     resolve(true);
-        //   }, 5000);
-        // });
         const res = await axios.post(`/api/auth/validate-email`, { token });
         console.log(res);
-
         if (res.status === 200) {
           toast.success("Email verified! Complete your registeration");
           setIsVerified(true);
-          setFormData((prevData) => ({
-            ...prevData,
-            email: res.data.email,
-          }));
+          setVerifiedEmail(res.data.email)
+          
         } else {
           toast.error("Verification failed. Try again");
         }
@@ -57,14 +43,6 @@ const Register = () => {
     verifyEmail();
   }, [token]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
   return (
     <Wrapper>
       {loading ? (
@@ -72,15 +50,9 @@ const Register = () => {
       ) : (
         <>
           {!isVerified ? (
-            <EmailVerificationForm
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
+            <EmailVerificationForm/>
           ) : (
-            <RegisterationForm
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
+            <RegisterationForm verifiedEmail={verifiedEmail} />
           )}
         </>
       )}

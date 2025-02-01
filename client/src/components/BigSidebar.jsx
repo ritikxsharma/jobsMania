@@ -5,7 +5,7 @@ import Wrapper from "../assets/wrappers/BigSidebar";
 
 const SideBar = () => {
   const { showSidebar } = useDashboardContext();
-
+  
   return (
     <Wrapper>
       <div
@@ -13,7 +13,7 @@ const SideBar = () => {
       >
         <div className="content">
           <header>
-            Jobify
+            Jobs Mania
           </header>
           <NavLinks isBigSidebar />
         </div>

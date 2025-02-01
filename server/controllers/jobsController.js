@@ -1,18 +1,12 @@
-const { nanoid } = require("nanoid");
-let jobs = require("../server");
-const throwError = require("../helpers/customErrors");
 const Job = require("../database/models/JobModel");
 const HTTP_STATUS = require("../helpers/statusCodes");
-const {
-  NOT_FOUND_ERROR
-} = require('../helpers/customErrors')
 
 //Get all jobs
 const getAllJobs = async (req, res, next) => {
   try {       
 
     const jobs = await Job.find({ createdBy: req.user.id });
-    res.status(HTTP_STATUS.OK).send(jobs);
+    res.status(HTTP_STATUS.OK).json( {jobs});
   } catch (error) {
     next(error);
   }
@@ -24,12 +18,10 @@ const createJob = async (req, res, next) => {
     
     req.body.createdBy = req.user.id
     
-    const job = await new Job(req.body);
-
-    job.save();
+    const job = await new Job(req.body).save()
 
     res.status(HTTP_STATUS.CREATED).json({ message: "job created", data: job });
-  } catch (error) {
+  } catch (error) {    
     next(error);
   }
 };

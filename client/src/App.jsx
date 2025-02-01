@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   HomeLayout,
   Landing,
@@ -18,7 +12,11 @@ import {
   Error,
 } from "./pages";
 
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer } from "react-toastify";
+import { loginAction, registerAction } from "./handlers/actions/authActions";
+import { dashboardLoader } from './handlers/loaders/dashboardLoader'
+import { createJobAction } from "./handlers/actions/jobActions";
+import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
 
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -42,22 +40,27 @@ const App = () => {
         {
           path: "register",
           element: <Register />,
+          action: registerAction,
         },
         {
           path: "login",
           element: <Login />,
+          action: loginAction,
         },
         {
           path: "dashboard",
           element: <DashboardLayout checkDefaultTheme={checkDefaultTheme} />,
+          loader: dashboardLoader,
           children: [
             {
               index: true,
               element: <AddJob />,
+              action: createJobAction
             },
             {
               path: "all-jobs",
               element: <AllJobs />,
+              loader: allJobsLoader
             },
             {
               path: "profile",

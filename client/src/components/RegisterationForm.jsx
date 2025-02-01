@@ -1,44 +1,29 @@
 import React from "react";
 import FormRow from "./FormRow";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { Form } from "react-router-dom";
 
-const RegisterationForm = ({ formData, handleInputChange }) => {
-
-  const navigate = useNavigate()
-
-  const handleSubmit = async(e) => {
-    try {
-      e.preventDefault()
-      
-      const res = await axios.post('/api/auth/register', formData)
-      if(res.status === 201){
-        toast.success('Registeration successfull!')
-        navigate('/login')
-      }else{
-        console.log(res);
-      }
-    } catch (error) {    
-      console.log(error.response.data);
-        
-      toast.error(error.response.data.message)
-    }
-  };
+const RegisterationForm = ({ verifiedEmail }) => {
+  
+  const registerFields = [
+    "firstName",
+    "lastName",
+    "email",
+    "location",
+    "password",
+  ];
 
   return (
-    <form method="post" className="form" onSubmit={handleSubmit}>
+    <Form method="post" className="form">
       <h4>Register</h4>
-      {Object.keys(formData).map((key, index) => {
+      {registerFields.map((key, index) => {
         return (
           <FormRow
             key={index}
             name={key}
-            type={key === "email" ? "email" : key === 'password' ? 'password' : "text"}
-            value={formData[key]}
+            type={key === 'password' ? 'password' : 'text'}
+            defaultValue={key === 'email' ? verifiedEmail : ''}
             labelText={key.replace(/(A-Z)/g, " $1").toUpperCase()}
-            onChange={handleInputChange}
-            disabled={key === "email"}
+            // disabled={key === "email"}
           />
         );
       })}
@@ -46,7 +31,7 @@ const RegisterationForm = ({ formData, handleInputChange }) => {
       <button type="submit" className="btn btn-block">
         Submit
       </button>
-    </form>
+    </Form>
   );
 };
 

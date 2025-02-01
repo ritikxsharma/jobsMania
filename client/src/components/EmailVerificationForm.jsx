@@ -1,46 +1,23 @@
 import React from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
 import FormRow from "./FormRow";
-import { Link } from "react-router-dom";
+import { Form, Link, useNavigation } from "react-router-dom";
 
-const EmailVerificationForm = ({ formData, handleInputChange }) => {  
-    const handleEmailSubmit = async (e) => {
-    e.preventDefault();
+const EmailVerificationForm = () => {  
 
-    try {
-      const res = await axios.post("/api/auth/pre-register", {email: formData.email});
-
-      console.log(res);
-
-      if (res.status === 200) {
-        toast.success(
-          "Please check your email and click on the link to verify."
-        );
-      } else {
-        toast.error(
-          "Unable to send verification link. Please try again later!"
-        );
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-    }finally{
-        window.history.replaceState(null, "", window.location.pathname);
-    }
-  };
+  const isSubmitting = useNavigation().state === 'submitting'
 
   return (
-    <form className="form" onSubmit={handleEmailSubmit}>
+    <Form  method="post" className="form">
       <h4>Email Verification</h4>
+      <input type="text" name="formType" defaultValue='email verification' hidden />
       <FormRow
         name="email"
         type="email"
-        value={formData.email}
+        defaultValue=''
         labelText="Email"
-        onChange={handleInputChange}
       />
-      <button type="submit" className="btn btn-block">
-        Verify
+      <button type="submit" className="btn btn-block" disabled={isSubmitting}>
+        { isSubmitting ? 'Verifying...' : 'Verify'}
       </button>
       <p>
         Already a member?{" "}
@@ -48,7 +25,7 @@ const EmailVerificationForm = ({ formData, handleInputChange }) => {
           login
         </Link>
       </p>
-    </form>
+    </Form>
   );
 };
 

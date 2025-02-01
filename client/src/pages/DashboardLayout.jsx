@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import { BigSideBar, Navbar, SmallSideBar } from "../components";
 import Wrapper from "../assets/wrappers/Dashboard";
+import authApi from "../api/authApi";
+import { toast } from "react-toastify";
 
 const DashboardContext = createContext();
 
 const DashboardLayout = ({ checkDefaultTheme }) => {
-  const user = {
-    name: "John",
-  };
 
+  const { user } = useLoaderData()  
+  
+  const navigate = useNavigate()
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
 
@@ -26,8 +28,10 @@ const DashboardLayout = ({ checkDefaultTheme }) => {
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
-  const logout = () => {
-    console.log("logout user");
+  const logout = async() => {
+    navigate('/', { replace: true })
+    await authApi.logout()
+    toast.success('Logged out successfully...')
   };
 
   return (
@@ -39,7 +43,7 @@ const DashboardLayout = ({ checkDefaultTheme }) => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet />
+              <Outlet context={{ user }} />
             </div>
           </div>
         </main>

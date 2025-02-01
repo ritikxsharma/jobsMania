@@ -17,7 +17,7 @@ const updateUser = async(req, res, next) => {
     try {
         const obj = { ...req.body }
         delete obj.password
-        const updatedUser = await User.findByIdAndUpdate(req.user.id, obj)
+        await User.findByIdAndUpdate(req.user.id, obj)
         res.status(HTTP_STATUS.OK).json({ message: 'update successfull' })
     } catch (error) {
         next(error)
