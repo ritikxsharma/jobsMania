@@ -26,6 +26,8 @@ import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
 import { editJobLoader } from "./handlers/loaders/editPageLoader";
 import { adminLoader } from "./handlers/loaders/adminLoader";
 import { updateProdileAction } from "./handlers/actions/userActions";
+import { userStatsLoader } from "./handlers/loaders/userStatsLoader";
+import Stats from "./pages/Stats";
 
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -91,6 +93,11 @@ const App = () => {
               path: "delete-job/:id",
               action: deleteJobAction,
             },
+            {
+              path: "stats",
+              element: <Stats/>,
+              loader: userStatsLoader
+            }
           ],
         },
       ],

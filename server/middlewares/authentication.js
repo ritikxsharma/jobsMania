@@ -14,8 +14,6 @@ const authenticateUser = async (req, res, next) => {
 
     const testUser = decodedToken.userId === "679f6789058453c420b656de";
     req.user = { id: decodedToken.userId, role: decodedToken.role, testUser };
-
-    console.log();
     
     next();
   } catch (error) {

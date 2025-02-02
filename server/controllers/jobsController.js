@@ -1,12 +1,13 @@
+const { default: mongoose } = require("mongoose");
 const Job = require("../database/models/JobModel");
 const HTTP_STATUS = require("../helpers/statusCodes");
+const day = require("dayjs");
 
 //Get all jobs
 const getAllJobs = async (req, res, next) => {
-  try {       
-
+  try {
     const jobs = await Job.find({ createdBy: req.user.id });
-    res.status(HTTP_STATUS.OK).json( {jobs});
+    res.status(HTTP_STATUS.OK).json({ jobs });
   } catch (error) {
     next(error);
   }
@@ -15,33 +16,31 @@ const getAllJobs = async (req, res, next) => {
 //Create a new job
 const createJob = async (req, res, next) => {
   try {
-    
-    req.body.createdBy = req.user.id
-    
-    const job = await new Job(req.body).save()
+    req.body.createdBy = req.user.id;
+
+    const job = await new Job(req.body).save();
 
     res.status(HTTP_STATUS.CREATED).json({ message: "job created", data: job });
-  } catch (error) {    
+  } catch (error) {
     next(error);
   }
 };
 
 //Find job with id
 const findJobById = async (req, res, next) => {
-  try {    
+  try {
     const { id } = req.params;
     const job = await Job.findById(id);
 
     res.status(HTTP_STATUS.OK).json({ job });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
 //Edit an exisiting job using id
 const editJob = async (req, res, next) => {
   try {
-    
     const { id } = req.params;
 
     const job = await Job.findByIdAndUpdate(id, req.body, {
@@ -67,10 +66,66 @@ const deleteJob = async (req, res, next) => {
   }
 };
 
+const getStats = async (req, res, next) => {
+  try {
+    let stats = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.id) } },
+      { $group: { _id: "$jobStatus", count: { $sum: 1 } } },
+    ]);
+
+    stats = stats.reduce((acc, curr) => {
+      const { _id: title, count } = curr;
+      acc[title] = count;
+      return acc;
+    }, {});
+
+    const userStats = {
+      pending: stats.pending || 0,
+      interview: stats.interview || 0,
+      declined: stats.declined || 0,
+    };
+
+    let monthlyApplications = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user.id) } },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.year": -1, "_id.month": -1 } },
+      { $limit: 6 },
+    ]);
+
+    monthlyApplications = monthlyApplications.map((item) => {
+      const {
+        _id: { year, month },
+        count,
+      } = item;
+      const date = day()
+        .month(month - 1)
+        .year(year)
+        .format("MMM YY");
+
+      return {date, count };
+    }).reverse();    
+
+    res
+      .status(HTTP_STATUS.OK)
+      .json({ message: "success", stats: userStats, monthlyApplications });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllJobs,
   createJob,
   findJobById,
   editJob,
   deleteJob,
+  getStats,
 };

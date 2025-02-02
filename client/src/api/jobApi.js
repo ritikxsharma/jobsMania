@@ -6,7 +6,8 @@ import apiClient from "./apiClient";
     getAllJobs: () => apiClient.get('/jobs'),
     getJobById: (id) => apiClient.get(`/jobs/${id}`),
     updateJob: (id, data) => apiClient.patch(`/jobs/${id}`, data),
-    deleteJob: (id) => apiClient.delete(`/jobs/${id}`)
+    deleteJob: (id) => apiClient.delete(`/jobs/${id}`),
+    getStats: () => apiClient.get('jobs/stats')
 }
 
 export default jobApi

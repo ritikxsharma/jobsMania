@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.article`
-    padding: 2rem;
+    padding: 1rem 2rem;
     background: var(--background-secondary-color);
     border-radius: var(--border-radius);
     border-bottom: 5px solid ${prop => prop.color};
