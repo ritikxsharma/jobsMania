@@ -1,3 +1,5 @@
+const { AWS_S3 } = require('../aws/config')
+const uploadImage = require('../aws/uploadImage')
 const Job = require('../database/models/JobModel')
 const User = require('../database/models/UserModel')
 const HTTP_STATUS = require('../helpers/statusCodes')
@@ -14,10 +16,22 @@ const getCurrentUser = async(req, res, next) => {
 }
 
 const updateUser = async(req, res, next) => {
+    const newUser = { ...req.body }
     try {
-        const obj = { ...req.body }
-        delete obj.password
-        await User.findByIdAndUpdate(req.user.id, obj)
+        if(req.file){
+            const uploadedImage = await uploadImage(req.file) 
+            
+            const user = await User.findById(req.user.id)
+            if(user.avatarPublicId){
+                await AWS_S3.deleteObject({
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: user.avatarPublicId
+                }).promise()
+            } 
+            newUser.avatar = uploadedImage.Location
+            newUser.avatarPublicId = uploadedImage.key
+        }
+        await User.findByIdAndUpdate(req.user.id, newUser, { new: true })
         res.status(HTTP_STATUS.OK).json({ message: 'update successfull' })
     } catch (error) {
         next(error)

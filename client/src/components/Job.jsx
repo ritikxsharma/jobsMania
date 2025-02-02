@@ -27,8 +27,8 @@ const Job = ({ job }) => {
           <div className={`status ${job.jobStatus}`}>{job.jobStatus}</div>
         </div>
         <footer className="actions">
-        <Link to={`../edit-job/${job._id}`} className="btn edit-btn">Edit</Link>
-        <Form method="post" action={`../delete-job/${job._id}`}>
+        <Link to={`edit-job/${job._id}`} className="btn edit-btn">Edit</Link>
+        <Form method="post" action={`delete-job/${job._id}`}>
           <button type="submit" className="btn delete-btn">
             Delete
           </button>

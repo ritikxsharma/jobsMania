@@ -5,8 +5,7 @@ import Wrapper from "../assets/wrappers/LogoutContainer";
 
 const LogoutContainer = () => {
   const [showLogout, setShowLogout] = useState(false);
-  const { user, logout } = useDashboardContext();
-
+  const { user, logout } = useDashboardContext();  
   return (
     <Wrapper>
       <button
@@ -14,7 +13,7 @@ const LogoutContainer = () => {
         className="btn logout-btn"
         onClick={() => setShowLogout(!showLogout)}
       >
-        <FaUserCircle />
+        {user.avatar? <img src={user.avatar} alt='avatar' className="img" /> : <FaUserCircle />}
         { user?.firstName }
         <FaCaretDown />
       </button>

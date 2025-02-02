@@ -25,6 +25,7 @@ import {
 import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
 import { editJobLoader } from "./handlers/loaders/editPageLoader";
 import { adminLoader } from "./handlers/loaders/adminLoader";
+import { updateProdileAction } from "./handlers/actions/userActions";
 
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -62,22 +63,23 @@ const App = () => {
           children: [
             {
               index: true,
-              element: <AddJob />,
-              action: createJobAction,
-            },
-            {
-              path: "all-jobs",
               element: <AllJobs />,
               loader: allJobsLoader,
             },
             {
+              path: "add-job",
+              element: <AddJob />,
+              action: createJobAction,
+            },
+            {
               path: "profile",
               element: <Profile />,
+              action: updateProdileAction,
             },
             {
               path: "admin",
               element: <Admin />,
-              loader: adminLoader
+              loader: adminLoader,
             },
             {
               path: "edit-job/:id",
@@ -87,7 +89,7 @@ const App = () => {
             },
             {
               path: "delete-job/:id",
-              action: deleteJobAction
+              action: deleteJobAction,
             },
           ],
         },

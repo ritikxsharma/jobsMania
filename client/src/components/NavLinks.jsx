@@ -16,6 +16,7 @@ const NavLinks = ({ isBigSidebar }) => {
             to={link.path}
             className="nav-link"
             onClick={isBigSidebar ? null : toggleSidebar}
+            end
           >
             <span className="icon">{link.icon}</span>
             {link.text}

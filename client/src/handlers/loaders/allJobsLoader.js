@@ -1,4 +1,4 @@
-import { jobApi } from "../../api/jobApi"
+import jobApi from "../../api/jobApi"
 import { toast } from 'react-toastify'
 
 export const allJobsLoader = async() => {
@@ -6,6 +6,8 @@ export const allJobsLoader = async() => {
         const { data } = await jobApi.getAllJobs()
         return { data }
     } catch (error) {
+        console.log(error);
+        
         toast.error('Error in fetching all jobs')
     }
 }

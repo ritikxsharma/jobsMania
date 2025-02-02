@@ -2,11 +2,12 @@ import React from "react";
 import { Form, useLoaderData, useNavigation } from "react-router-dom";
 import { FormRow, FormSelect } from "../components";
 import { JOB_STATUS, JOB_TYPE } from "../utils/constants";
+import { Wrapper } from "../assets/wrappers/DashboardFormPage";
 const EditJob = () => {
   const { job } = useLoaderData();
   const isSubmitting = useNavigation().state === "submitting";
   return (
-    <>
+    <Wrapper>
       <Form method="post" className="form">
         <h4 className="form-title">Edit Job</h4>
         <div className="form-center">
@@ -31,14 +32,14 @@ const EditJob = () => {
           />
           <button
             type="submit"
-            className="btn btn-block"
+            className="btn btn-block form-btn"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Updating..." : "Update"}
           </button>
         </div>
       </Form>
-    </>
+    </Wrapper>
   );
 };
 

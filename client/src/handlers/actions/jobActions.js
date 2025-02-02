@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { jobApi } from "../../api/jobApi";
+import jobApi from "../../api/jobApi";
 import { redirect } from "react-router-dom";
 
 export const createJobAction = async ({ request }) => {
@@ -11,8 +11,8 @@ export const createJobAction = async ({ request }) => {
     return null;
   } catch (error) {
     console.log(error);
-
-    toast.error("Error occured in creating a job. Please try again.");
+    
+    toast.error(error?.response?.data?.message || "Error occured in creating a job. Please try again.");
   }
 };
 

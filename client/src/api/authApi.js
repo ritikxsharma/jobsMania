@@ -5,7 +5,7 @@ const authApi = {
     validateEmail: () => apiClient.post('/auth/validate-email'),
     register: (data) => apiClient.post('/auth/register', data),
     login: (data) => apiClient.post('/auth/login', data),
-    logout: () => apiClient.get('/auth/logout')
+    logout: () => apiClient.get('/auth/logout'),
 }
 
 export default authApi

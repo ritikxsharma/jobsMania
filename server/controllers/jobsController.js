@@ -41,6 +41,7 @@ const findJobById = async (req, res, next) => {
 //Edit an exisiting job using id
 const editJob = async (req, res, next) => {
   try {
+    
     const { id } = req.params;
 
     const job = await Job.findByIdAndUpdate(id, req.body, {

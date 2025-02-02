@@ -1,4 +1,4 @@
-import { jobApi } from "../../api/jobApi"
+import jobApi from "../../api/jobApi"
 import{ toast } from 'react-toastify'
 
 export const editJobLoader = async({ params }) => {

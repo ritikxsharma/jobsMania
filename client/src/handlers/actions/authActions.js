@@ -35,3 +35,20 @@ export const registerAction = async ({ request }) => {
     toast.error(error?.response?.data?.message || "Internal Server Error");
   }
 };
+
+export const loginDemoUser = async(navigate) => {
+  const data = {
+    email: "test1@test.com",
+    password: "123"
+  }
+  try {
+    await authApi.login(data)
+    toast.success("Ready to test the application..");
+    navigate('/dashboard')
+  } catch (error) {
+    console.log(error);
+    
+    toast.error(error?.response?.data?.message || "Internal Server Error");
+    return error
+  }
+}

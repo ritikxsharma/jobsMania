@@ -8,9 +8,10 @@ const {
     deleteJob
 } = require('../controllers/jobsController')
 const { validateJobInput, validateIdParam } = require('../middlewares/validator')
+const { isTestUser } = require('../middlewares/authentication')
 
 router.route('/').get(getAllJobs)
-router.route('/:id').get(validateIdParam, findJobById).patch(validateJobInput, editJob).delete(deleteJob)
-router.route('/create').post(validateJobInput, createJob)
+router.route('/:id').get(validateIdParam, findJobById).patch(isTestUser, validateJobInput, editJob).delete(isTestUser, deleteJob)
+router.route('/create').post(isTestUser, validateJobInput, createJob)
 
 module.exports = router
