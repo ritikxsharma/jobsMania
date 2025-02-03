@@ -1,10 +1,12 @@
 import jobApi from "../../api/jobApi"
 import { toast } from 'react-toastify'
 
-export const allJobsLoader = async() => {
+export const allJobsLoader = async({ request }) => {
     try {
-        const { data } = await jobApi.getAllJobs()
-        return { data }
+        const params = Object.fromEntries(new URL(request.url).searchParams.entries());
+        
+        const { data } = await jobApi.getAllJobs(params)
+        return { data, searchValue: params.search }
     } catch (error) {
         console.log(error);
         

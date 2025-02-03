@@ -22,7 +22,7 @@ const EmailVerificationForm = () => {
       <p>
         Already a member?{" "}
         <Link to="/login" className="member-btn">
-          login
+          login or explore
         </Link>
       </p>
     </Form>
