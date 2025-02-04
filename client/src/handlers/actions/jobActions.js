@@ -9,9 +9,7 @@ export const createJobAction = async ({ request }) => {
     await jobApi.createJob(data);
     toast.success("job created successfully.");
     return null;
-  } catch (error) {
-    console.log(error);
-    
+  } catch (error) {    
     toast.error(error?.response?.data?.message || "Error occured in creating a job. Please try again.");
   }
 };

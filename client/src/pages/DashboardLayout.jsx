@@ -1,6 +1,11 @@
-import React, { createContext, useContext, useState } from "react";
-import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
-import { BigSideBar, Navbar, SmallSideBar } from "../components";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "react-router-dom";
+import { BigSideBar, Loader, Navbar, SmallSideBar } from "../components";
 import Wrapper from "../assets/wrappers/Dashboard";
 import authApi from "../api/authApi";
 import { toast } from "react-toastify";
@@ -8,34 +13,53 @@ import { toast } from "react-toastify";
 const DashboardContext = createContext();
 
 const DashboardLayout = ({ checkDefaultTheme }) => {
+  const { user } = useLoaderData();
 
-  const { user } = useLoaderData()  
-  
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const navigation = useNavigation()
+  const [isPageLoading, setIsPageLoading] = useState(false);
+
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
 
-  const toggleDarkTheme = () => {
-    
-    setIsDarkTheme((prevState) => {
-      const newDarkTheme = !prevState
-      document.body.classList.toggle('dark-theme', newDarkTheme)
-      localStorage.setItem('darkTheme', newDarkTheme)
-      return newDarkTheme
-    })    
+  useEffect(() => {
+    if (navigation.state === "loading") {
+      setIsPageLoading(true);
+    }else{
+      setTimeout(() => {
+        setIsPageLoading(false);
+      }, 500);        
+    }
+  }, [navigation.state]);
 
+  const toggleDarkTheme = () => {
+    setIsDarkTheme((prevState) => {
+      const newDarkTheme = !prevState;
+      document.body.classList.toggle("dark-theme", newDarkTheme);
+      localStorage.setItem("darkTheme", newDarkTheme);
+      return newDarkTheme;
+    });
   };
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
-  const logout = async() => {
-    navigate('/', { replace: true })
-    await authApi.logout()
-    toast.success('Logged out successfully...')
+  const logout = async () => {
+    navigate("/", { replace: true });
+    await authApi.logout();
+    toast.success("Logged out successfully...");
   };
 
   return (
-    <DashboardContext.Provider value={{user, showSidebar, isDarkTheme, toggleSidebar, toggleDarkTheme, logout}}>
+    <DashboardContext.Provider
+      value={{
+        user,
+        showSidebar,
+        isDarkTheme,
+        toggleSidebar,
+        toggleDarkTheme,
+        logout,
+      }}
+    >
       <Wrapper>
         <main className="dashboard">
           <SmallSideBar />
@@ -43,7 +67,7 @@ const DashboardLayout = ({ checkDefaultTheme }) => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet context={{ user }} />
+              {isPageLoading ? <Loader /> : <Outlet context={{ user }} />}
             </div>
           </div>
         </main>
@@ -52,5 +76,5 @@ const DashboardLayout = ({ checkDefaultTheme }) => {
   );
 };
 
-export const useDashboardContext = () => useContext(DashboardContext)
+export const useDashboardContext = () => useContext(DashboardContext);
 export default DashboardLayout;

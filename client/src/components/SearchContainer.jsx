@@ -9,13 +9,13 @@ const SearchContainer = () => {
   const submit = useSubmit();
 
   const debounce = (onChange) => {
-    let timeout = 2000;
+    let timeout;
     return (e) => {
       const form = e.target.form;
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         onChange(form);
-      }, timeout);
+      }, 500);
     };
   };
 

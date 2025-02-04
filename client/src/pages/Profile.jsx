@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, useNavigation, useOutletContext } from "react-router-dom";
 import { FormRow } from "../components";
 import { Wrapper } from "../assets/wrappers/DashboardFormPage";
@@ -14,7 +14,7 @@ const Profile = () => {
         <div className="form-center">
           <div className="form-row">
             <label htmlFor="avatar" className="form-label">
-              Choose Image (max: 0.5 MB)
+              Choose Image (max: 1 MB)
             </label>
             <input
               type="file"

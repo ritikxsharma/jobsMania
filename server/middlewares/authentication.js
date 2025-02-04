@@ -32,8 +32,6 @@ const hasValidPermission = (...roles) => {
 };
 
 const isTestUser = (req, res, next) => {
-  console.log(isTestUser);
-
   if (req.user.testUser) {
     throw new BAD_REQUEST_ERROR("Test User. Read Only...");
   }

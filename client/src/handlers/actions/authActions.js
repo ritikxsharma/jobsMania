@@ -10,9 +10,7 @@ export const loginAction = async ({ request }) => {
     await authApi.login(data);
     toast.success("Login successful");
     return redirect("/dashboard");
-  } catch (error) {    
-    console.log(error);
-    
+  } catch (error) {        
     toast.error(error?.response?.data?.message || "Internal Server Error");
     return error;
   }
@@ -45,9 +43,7 @@ export const loginDemoUser = async(navigate) => {
     await authApi.login(data)
     toast.success("Ready to test the application..");
     navigate('/dashboard')
-  } catch (error) {
-    console.log(error);
-    
+  } catch (error) {    
     toast.error(error?.response?.data?.message || "Internal Server Error");
     return error
   }

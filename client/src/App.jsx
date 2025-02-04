@@ -1,4 +1,6 @@
 import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   HomeLayout,
@@ -25,7 +27,7 @@ import {
 import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
 import { editJobLoader } from "./handlers/loaders/editPageLoader";
 import { adminLoader } from "./handlers/loaders/adminLoader";
-import { updateProdileAction } from "./handlers/actions/userActions";
+import { updateProfileAction } from "./handlers/actions/userActions";
 import { userStatsLoader } from "./handlers/loaders/userStatsLoader";
 import Stats from "./pages/Stats";
 
@@ -35,7 +37,13 @@ const checkDefaultTheme = () => {
   return isDarkTheme;
 };
 
-checkDefaultTheme();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
 
 const App = () => {
   const router = createBrowserRouter([
@@ -76,7 +84,7 @@ const App = () => {
             {
               path: "profile",
               element: <Profile />,
-              action: updateProdileAction,
+              action: updateProfileAction,
             },
             {
               path: "admin",
@@ -95,9 +103,9 @@ const App = () => {
             },
             {
               path: "stats",
-              element: <Stats/>,
-              loader: userStatsLoader
-            }
+              element: <Stats />,
+              loader: userStatsLoader,
+            },
           ],
         },
       ],
@@ -106,8 +114,11 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <ToastContainer position="top-right" autoClose={3000} />
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </>
   );
 };

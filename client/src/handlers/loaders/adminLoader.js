@@ -6,9 +6,7 @@ export const adminLoader = async() => {
     try {
         const { data } = await userApi.adminAppStats()
         return data
-    } catch (error) {
-        console.log(error);
-        
+    } catch (error) {        
         toast.error('You are not authorized to access this page!')
         return redirect('/dashboard/all-jobs')
     }

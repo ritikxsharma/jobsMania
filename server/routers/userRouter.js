@@ -3,6 +3,7 @@ const {
   getCurrentUser,
   updateUser,
   getApplicationStatus,
+  generateUploadURL,
 } = require("../controllers/userController");
 const {
   authenticateUser,
@@ -10,17 +11,16 @@ const {
   isTestUser,
 } = require("../middlewares/authentication");
 const { validateUpdateUserInput } = require("../middlewares/validator");
-const upload = require("../middlewares/multer");
 
 const router = express.Router();
 
+router.route('/generate-upload-url').get(generateUploadURL)
 router.route("/current-user").get(getCurrentUser);
 router
   .route("/update-user")
   .patch(
     isTestUser,
     authenticateUser,
-    upload.single("avatar"),
     validateUpdateUserInput,
     updateUser
   );
