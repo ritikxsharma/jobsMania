@@ -17,7 +17,7 @@ connectDB()
     if (process.env.NODE_ENV === "dev") {
       app.use(morgan("dev"));
     }
-    app.use(express.static(path.resolve(__dirname, "../client/dist")));
+    app.use(express.static(path.resolve(__dirname, "./public")));
     app.use(express.json());
     app.use(cookieParser());
 
@@ -26,7 +26,7 @@ connectDB()
     app.use("/api/v1/auth", require("./routers/authRouter"));
 
     app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "../client/dist", "index.html"));
+      res.sendFile(path.resolve(__dirname, "./public", "index.html"));
     });
 
     app.use("*", (req, res) => {
