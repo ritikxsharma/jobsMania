@@ -1,6 +1,6 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   HomeLayout,
@@ -22,14 +22,15 @@ import { dashboardLoader } from "./handlers/loaders/dashboardLoader";
 import {
   createJobAction,
   deleteJobAction,
-  updateJobAction,
+  editJobAction,
 } from "./handlers/actions/jobActions";
 import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
-import { editJobLoader } from "./handlers/loaders/editPageLoader";
+import { editJobLoader } from "./handlers/loaders/editJobLoader";
 import { adminLoader } from "./handlers/loaders/adminLoader";
 import { updateProfileAction } from "./handlers/actions/userActions";
-import { userStatsLoader } from "./handlers/loaders/userStatsLoader";
 import Stats from "./pages/Stats";
+import ErrorComponent from "./components/ErrorComponent";
+import { getStatsLoader } from "./handlers/loaders/getStatsLoader";
 
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -40,7 +41,7 @@ const checkDefaultTheme = () => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,
+      staleTime: 1000*20
     },
   },
 });
@@ -64,27 +65,28 @@ const App = () => {
         {
           path: "login",
           element: <Login />,
-          action: loginAction,
+          action: loginAction(queryClient),
         },
         {
           path: "dashboard",
-          element: <DashboardLayout checkDefaultTheme={checkDefaultTheme} />,
-          loader: dashboardLoader,
+          element: <DashboardLayout checkDefaultTheme={checkDefaultTheme} queryClient={queryClient} />,
+          loader: dashboardLoader(queryClient),
           children: [
             {
               index: true,
               element: <AllJobs />,
-              loader: allJobsLoader,
+              loader: allJobsLoader(queryClient),
+              errorElement: <ErrorComponent />
             },
             {
               path: "add-job",
               element: <AddJob />,
-              action: createJobAction,
+              action: createJobAction(queryClient),
             },
             {
               path: "profile",
               element: <Profile />,
-              action: updateProfileAction,
+              action: updateProfileAction(queryClient),
             },
             {
               path: "admin",
@@ -94,17 +96,18 @@ const App = () => {
             {
               path: "edit-job/:id",
               element: <EditJob />,
-              loader: editJobLoader,
-              action: updateJobAction,
+              loader: editJobLoader(queryClient),
+              action: editJobAction(queryClient),
             },
             {
               path: "delete-job/:id",
-              action: deleteJobAction,
+              action: deleteJobAction(queryClient),
             },
             {
               path: "stats",
               element: <Stats />,
-              loader: userStatsLoader,
+              loader: getStatsLoader(queryClient),
+              errorElement: <ErrorComponent />,
             },
           ],
         },

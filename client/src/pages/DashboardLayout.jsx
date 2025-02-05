@@ -9,19 +9,19 @@ import { BigSideBar, Loader, Navbar, SmallSideBar } from "../components";
 import Wrapper from "../assets/wrappers/Dashboard";
 import authApi from "../api/authApi";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { userQuery } from "../handlers/loaders/dashboardLoader";
 
 const DashboardContext = createContext();
 
-const DashboardLayout = ({ checkDefaultTheme }) => {
-  const { user } = useLoaderData();
-
+const DashboardLayout = ({ checkDefaultTheme, queryClient }) => {
+  const { user } = useQuery(userQuery).data  
   const navigate = useNavigate();
   const navigation = useNavigation()
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   const [showSidebar, setShowSidebar] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
-
   useEffect(() => {
     if (navigation.state === "loading") {
       setIsPageLoading(true);
@@ -46,9 +46,9 @@ const DashboardLayout = ({ checkDefaultTheme }) => {
   const logout = async () => {
     navigate("/", { replace: true });
     await authApi.logout();
+    queryClient.invalidateQueries()
     toast.success("Logged out successfully...");
   };
-
   return (
     <DashboardContext.Provider
       value={{

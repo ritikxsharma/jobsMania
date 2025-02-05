@@ -5,7 +5,8 @@ import FormRow from "./FormRow";
 import { useAllJobsContext } from "../pages/AllJobs";
 
 const SearchContainer = () => {
-  const { searchValue } = useAllJobsContext();
+  const { searchValues } = useAllJobsContext();
+  const { search } = searchValues
   const submit = useSubmit();
 
   const debounce = (onChange) => {
@@ -26,7 +27,7 @@ const SearchContainer = () => {
           <FormRow
             type="search"
             name="search"
-            defaultValue={searchValue || ""}
+            defaultValue={search || ""}
             required={false}
             onChange={debounce((form) => submit(form))}
           ></FormRow>

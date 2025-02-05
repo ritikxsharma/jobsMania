@@ -1,9 +1,13 @@
 import React from "react";
-import { useLoaderData } from "react-router-dom";
 import { ChartsContainer, StatsContainer } from "../components";
+import { useQuery } from "@tanstack/react-query";
+import { statsQuery } from "../handlers/loaders/getStatsLoader";
 
 const Stats = () => {
-  const { stats, monthlyApplications } = useLoaderData();  
+  
+  const data = useQuery(statsQuery)
+  const { stats, monthlyApplications } = data.data
+  
   return (
     <>
       <StatsContainer data={stats} />

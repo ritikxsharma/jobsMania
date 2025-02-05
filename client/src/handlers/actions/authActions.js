@@ -2,12 +2,13 @@ import { toast } from "react-toastify";
 import authApi from "../../api/authApi";
 import { redirect } from "react-router-dom";
 
-export const loginAction = async ({ request }) => {
+export const loginAction = (queryClient) => async ({ request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
   try {
     await authApi.login(data);
+    queryClient.invalidateQueries()
     toast.success("Login successful");
     return redirect("/dashboard");
   } catch (error) {        

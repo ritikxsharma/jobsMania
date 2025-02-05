@@ -1,7 +1,8 @@
 import { toast } from "react-toastify";
 import userApi from "../../api/userApi";
+import { redirect } from "react-router-dom";
 
-export const updateProfileAction = async ({ request }) => {
+export const updateProfileAction = (queryClient) => async ({ request }) => {
   try {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
@@ -25,8 +26,9 @@ export const updateProfileAction = async ({ request }) => {
     }
     
     await userApi.updateProfile(data)    
+    queryClient.invalidateQueries(['user'])
     toast.success('Profile Updated successfully.')
-    return null
+    redirect('/dashboard')
     
   } catch (error) {
     toast.error(error?.response?.data?.message || "Internal Server Error");

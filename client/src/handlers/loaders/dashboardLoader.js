@@ -1,10 +1,15 @@
 import { redirect } from "react-router-dom";
 import userApi from "../../api/userApi"
 
-export const dashboardLoader = async() => {
+export const userQuery = {
+    queryKey: ['user'],
+    queryFn: async() => (await userApi.currentUser()).data
+}
+
+export const dashboardLoader = (queryClient) => async() => {
     try {       
-        const res = await userApi.currentUser()        
-        return res.data
+        await queryClient.ensureQueryData(userQuery)      
+        return null
     } catch (error) {
         return redirect('/')
     }

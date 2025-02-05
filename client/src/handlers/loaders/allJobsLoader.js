@@ -1,13 +1,24 @@
-import jobApi from "../../api/jobApi"
-import { toast } from 'react-toastify'
+import jobApi from "../../api/jobApi";
+import { toast } from "react-toastify";
 
-export const allJobsLoader = async({ request }) => {
+export const allJobsQuery = (params) => {
+  return {
+    queryKey: ["jobs", params.search ?? "", params.page ?? 1],
+    queryFn: async () => (await jobApi.getAllJobs(params)).data,
+  };
+};
+
+export const allJobsLoader =
+  (queryClient) =>
+  async ({ request }) => {
     try {
-        const params = Object.fromEntries(new URL(request.url).searchParams.entries());
-        
-        const { data } = await jobApi.getAllJobs(params)
-        return { data, searchValue: params.search }
-    } catch (error) {        
-        toast.error('Error in fetching all jobs')
+      const params = Object.fromEntries(
+        new URL(request.url).searchParams.entries()
+      );
+      await queryClient.ensureQueryData(allJobsQuery(params));
+
+      return { searchValues: params};
+    } catch (error) {
+      toast.error("Error in fetching all jobs");
     }
-}
+  };
