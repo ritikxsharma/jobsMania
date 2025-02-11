@@ -45,5 +45,6 @@ export const deleteJobAction = (queryClient) => async({params}) => {
     return redirect('/dashboard')
   }catch(error){
     toast.error(error?.response?.data?.message || 'Error in deleting the job.')
+    return redirect('/dashboard')
   }
 }
