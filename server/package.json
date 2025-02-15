@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "setup-project": "npm i && cd.. && cd client && npm i",
-    "production": "npm i && cd.. && cd client && rimraf -rf dist && npm i && npm run build",
+    "production": "npm i && npm i --prefix ../client && rimraf ../client/dist && npm run build --prefix ../client",
     "server": "nodemon server.js",
     "client": "cd.. && cd client && npm run dev",
     "dev": "concurrently --kill-others-on-fail \" npm run server \" \" npm run client\" "
