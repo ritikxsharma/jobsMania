@@ -31,7 +31,7 @@ connectDB()
       
       app.use(express.static(clientPath));
       app.get("*", (req, res) => {
-        res.sendFile(path.join(clientPath, "index.html"));
+        res.sendFile(path.resolve(clientPath, "index.html"));
       });
     }
 
