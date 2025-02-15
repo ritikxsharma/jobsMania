@@ -13,10 +13,10 @@ const authenticateUser = async (req, res, next) => {
     if (!decodedToken) throw new UNAUTHORIZED_ERROR("Authentication Error");
 
     const testUser = decodedToken.userId === "679f6789058453c420b656de";
-    req.user = { id: decodedToken.userId, role: decodedToken.role, testUser };
-
+    req.user = { id: decodedToken.userId, role: decodedToken.role, testUser };   
+   
     next();
-  } catch (error) {
+  } catch (error) {   
     error.message = "Authentication error. Please try again!";
     next(error);
   }

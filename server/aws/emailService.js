@@ -1,6 +1,6 @@
 const { AWS_SES } = require("./config");
 
-const sendEmail = async (email, token) => {
+const sendEmail = async (email, token, baseURL) => {
   await new Promise((resolve, reject) => {
     AWS_SES.sendEmail(
       {
@@ -21,7 +21,7 @@ const sendEmail = async (email, token) => {
                   <h2>Welcome to Jobs Mania</h2>
                   <p>We are glad to have you with us.</p>
                   <p>Click on the link below to activate your account.</p>
-                  <a href="http://localhost:${process.env.PORT}/register?token=${token}">Activate my account</a>
+                  <a href=${baseURL}/register?token=${token}>Activate my account</a>
                 </html>
               `,
             },

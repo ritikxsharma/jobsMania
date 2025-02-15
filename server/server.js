@@ -17,7 +17,7 @@ connectDB()
     if (process.env.NODE_ENV === "dev") {
       app.use(morgan("dev"));
     }
-    app.use(express.static(path.resolve(__dirname, "./public")));
+    
     app.use(express.json());
     app.use(cookieParser());
 
@@ -25,9 +25,15 @@ connectDB()
     app.use("/api/v1/user", authenticateUser, require("./routers/userRouter"));
     app.use("/api/v1/auth", require("./routers/authRouter"));
 
-    app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "./public", "index.html"));
-    });
+    if(process.env.NODE_ENV === "production"){
+      const clientPath = path.resolve(__dirname, "../client", "dist")
+      console.log(clientPath);
+      
+      app.use(express.static(clientPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.join(clientPath, "index.html"));
+      });
+    }
 
     app.use("*", (req, res) => {
       res.status(404).json({ message: "Page not found!" });

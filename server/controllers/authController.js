@@ -10,10 +10,11 @@ const {
   hashPassword,
   validatePassword,
 } = require("../helpers/passwordManager");
+const jwt = require("jsonwebtoken");
 
 const preRegister = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { email, baseURL } = req.body;
 
     const user = await User.findOne({ email });
     if (user) {
@@ -25,7 +26,7 @@ const preRegister = async (req, res, next) => {
 
     const token = generateToken({ email });
 
-    await sendEmail(email, token);
+    await sendEmail(email, token, baseURL);
 
     res.status(HTTP_Status.OK).json({ message: "email sent", token });
   } catch (error) {
@@ -82,11 +83,24 @@ const login = async (req, res, next) => {
     }
 
     const token = generateToken({ userId: user._id, role: user.role });
+    const refreshToken = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "30s" }
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      maxAge: 1000 * 60 * 15,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 15,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
     });
     res
       .status(HTTP_Status.OK)
@@ -102,8 +116,59 @@ const logout = async (req, res, next) => {
       httpOnly: true,
       expires: new Date(Date.now()),
     });
+    res.cookie("refreshToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
 
     res.status(HTTP_Status.OK).json({ message: "logout successful" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const refreshToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      return res.status(404).json({ message: "Refresh token is requried!" });
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err)
+        return res
+          .status(HTTP_Status.FORBIDDEN)
+          .json({ message: "Invalid or expired refresh token" });
+
+      const user = await User.findById(decoded.userId);
+      if (!user)
+        return res
+          .status(HTTP_Status.NOT_FOUND)
+          .json({ message: "User not found" });
+
+      const newToken = generateToken({ userId: user._id, role: user.role });
+      const newRefreshToken = jwt.sign(
+        { userId: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "30s" }
+      );
+
+      res.cookie("token", newToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 15,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+      });
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 15,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Strict",
+      });
+
+      res.status(HTTP_Status.OK).json({ message: "Tokens refreshed" });
+    });
   } catch (error) {
     next(error);
   }
@@ -115,4 +180,5 @@ module.exports = {
   register,
   login,
   logout,
+  refreshToken,
 };
