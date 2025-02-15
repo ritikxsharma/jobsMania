@@ -26,9 +26,7 @@ connectDB()
     app.use("/api/v1/auth", require("./routers/authRouter"));
 
     if(process.env.NODE_ENV === "production"){
-      const clientPath = path.resolve(__dirname, "../client", "dist")
-      console.log(clientPath);
-      
+      const clientPath = path.resolve(__dirname, "public")      
       app.use(express.static(clientPath));
       app.get("*", (req, res) => {
         res.sendFile(path.resolve(clientPath, "index.html"));
