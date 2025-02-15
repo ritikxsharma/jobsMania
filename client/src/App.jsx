@@ -41,7 +41,7 @@ const checkDefaultTheme = () => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000*20
+      staleTime: 1000*2
     },
   },
 });
@@ -118,7 +118,7 @@ const App = () => {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer position="top-right" autoClose={2000} />
         <RouterProvider router={router} />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

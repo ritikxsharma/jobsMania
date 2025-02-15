@@ -22,6 +22,7 @@ export const registerAction = async ({ request }) => {
   const data = Object.fromEntries(formData);
   try {
     if (data?.formType === "email verification") {
+      data.baseURL = window.location.origin
       await authApi.preRegister(data);
       toast.success("Email sent. Please check mail and click to verify.");
       return redirect("/");
