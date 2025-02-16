@@ -1,0 +1,1 @@
+import{c as a,j as s,d as r,e as c,f as n}from"./index-uiM2VP59.js";import{S as t}from"./StatItem-Bi2RXcbE.js";const u=()=>{const{users:e,jobs:o}=a();return s.jsxs(r,{children:[s.jsx(t,{title:"current users",count:e,color:"#e9b949",bcg:"#fcefc7",icon:s.jsx(c,{})}),s.jsx(t,{title:"total jobs",count:o,color:"#647acb",bcg:"#e0e8f9",icon:s.jsx(n,{})})]})};export{u as default};

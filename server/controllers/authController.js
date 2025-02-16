@@ -15,6 +15,7 @@ const jwt = require("jsonwebtoken");
 const preRegister = async (req, res, next) => {
   try {
     const { email, baseURL } = req.body;
+    console.log(baseURL);
 
     const user = await User.findOne({ email });
     if (user) {
@@ -150,7 +151,7 @@ const refreshToken = async (req, res) => {
       const newRefreshToken = jwt.sign(
         { userId: user._id, role: user.role },
         process.env.JWT_SECRET,
-        { expiresIn: "30s" }
+        { expiresIn: "1h" }
       );
 
       res.cookie("token", newToken, {
