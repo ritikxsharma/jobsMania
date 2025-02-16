@@ -1,0 +1,1 @@
+import{j as s,p as c}from"./index-D9ds6A4A.js";const l=({count:e,title:a,icon:r,color:n,bcg:t})=>s.jsxs(c,{color:n,bcg:t,children:[s.jsxs("header",{children:[s.jsx("span",{className:"count",children:e}),s.jsx("span",{className:"icon",children:r})]}),s.jsx("h5",{className:"title",children:a})]});export{l as S};

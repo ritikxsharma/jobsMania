@@ -4,9 +4,10 @@ import authApi from "./authApi";
 import { toast } from "react-toastify";
 
 const apiClient = axios.create({
-  baseURL: "/api/v1/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || window.location.href + "api/v1/",
   withCredentials: true,
 });
+
 
 apiClient.interceptors.response.use(
   (response) => {
@@ -24,7 +25,7 @@ apiClient.interceptors.response.use(
         await forceLogout();
         return Promise.reject(error);
       }
-    } else if (error?.response?.status === 404) {
+    } else if (error?.response?.status === 404) {      
       await forceLogout();
       return Promise.reject(error);
     }
@@ -41,9 +42,9 @@ const forceLogout = async () => {
     Cookies.remove("refreshToken");
 
     toast.info("Session expired. Please login again!", { autoClose: 1200 });
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 1500);
+    // setTimeout(() => {
+    //   window.location.href = "/";
+    // }, 1500);
   }
 };
 

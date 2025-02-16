@@ -15,9 +15,9 @@ import { userQuery } from "../handlers/loaders/dashboardLoader";
 const DashboardContext = createContext();
 
 const DashboardLayout = ({ checkDefaultTheme, queryClient }) => {
-  const { user } = useQuery(userQuery).data  
+  const { user } = useQuery(userQuery).data;
   const navigate = useNavigate();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   const [showSidebar, setShowSidebar] = useState(false);
@@ -25,10 +25,10 @@ const DashboardLayout = ({ checkDefaultTheme, queryClient }) => {
   useEffect(() => {
     if (navigation.state === "loading") {
       setIsPageLoading(true);
-    }else{
+    } else {
       setTimeout(() => {
         setIsPageLoading(false);
-      }, 500);        
+      }, 500);
     }
   }, [navigation.state]);
 
@@ -46,7 +46,7 @@ const DashboardLayout = ({ checkDefaultTheme, queryClient }) => {
   const logout = async () => {
     navigate("/", { replace: true });
     await authApi.logout();
-    queryClient.invalidateQueries()
+    queryClient.invalidateQueries();
     toast.success("Logged out successfully...");
   };
   return (

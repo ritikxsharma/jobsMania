@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -8,13 +8,16 @@ import {
   Register,
   Login,
   DashboardLayout,
-  AddJob,
-  AllJobs,
-  Profile,
   Error,
-  EditJob,
-  Admin,
 } from "./pages";
+
+const AllJobs = lazy(() => import("./pages/AllJobs"));
+const AddJob = lazy(() => import("./pages/AddJob"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Admin = lazy(() => import("./pages/Admin"));
+const EditJob = lazy(() => import("./pages/EditJob"));
+const Stats = lazy(() => import("./pages/Stats"));
+const ErrorComponent = lazy(() => import("./components/ErrorComponent"));
 
 import { ToastContainer } from "react-toastify";
 import { loginAction, registerAction } from "./handlers/actions/authActions";
@@ -28,9 +31,8 @@ import { allJobsLoader } from "./handlers/loaders/allJobsLoader";
 import { editJobLoader } from "./handlers/loaders/editJobLoader";
 import { adminLoader } from "./handlers/loaders/adminLoader";
 import { updateProfileAction } from "./handlers/actions/userActions";
-import Stats from "./pages/Stats";
-import ErrorComponent from "./components/ErrorComponent";
 import { getStatsLoader } from "./handlers/loaders/getStatsLoader";
+import { Loader } from "./components";
 
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -41,7 +43,7 @@ const checkDefaultTheme = () => {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000*2
+      staleTime: 1000 * 2,
     },
   },
 });
@@ -69,33 +71,62 @@ const App = () => {
         },
         {
           path: "dashboard",
-          element: <DashboardLayout checkDefaultTheme={checkDefaultTheme} queryClient={queryClient} />,
+          element: (
+            <DashboardLayout
+              checkDefaultTheme={checkDefaultTheme}
+              queryClient={queryClient}
+            />
+          ),
           loader: dashboardLoader(queryClient),
           children: [
             {
               index: true,
-              element: <AllJobs />,
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <AllJobs />
+                </Suspense>
+              ),
               loader: allJobsLoader(queryClient),
-              errorElement: <ErrorComponent />
+              errorElement: (
+                <Suspense fallback={<Loader />}>
+                  <ErrorComponent />
+                </Suspense>
+              ),
             },
             {
               path: "add-job",
-              element: <AddJob />,
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <AddJob />
+                </Suspense>
+              ),
               action: createJobAction(queryClient),
             },
             {
               path: "profile",
-              element: <Profile />,
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <Profile />
+                </Suspense>
+              ),
               action: updateProfileAction(queryClient),
             },
             {
               path: "admin",
-              element: <Admin />,
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <Admin />
+                </Suspense>
+              ),
               loader: adminLoader,
             },
             {
               path: "edit-job/:id",
-              element: <EditJob />,
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <EditJob />
+                </Suspense>
+              ),
               loader: editJobLoader(queryClient),
               action: editJobAction(queryClient),
             },
@@ -105,7 +136,11 @@ const App = () => {
             },
             {
               path: "stats",
-              element: <Stats />,
+              element: (
+                <Suspense fallback={<Loader />}>
+                  <Stats />
+                </Suspense>
+              ),
               loader: getStatsLoader(queryClient),
               errorElement: <ErrorComponent />,
             },
